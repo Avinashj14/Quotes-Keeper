@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import QuoteFetcher from './components/QuoteFetcher';
+import SavedQuotes from './components/SavedQuotes';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [savedQuotes, setSavedQuotes] = useState([]);
+
+  useEffect(() => {
+    const storedQuotes = localStorage.getItem('savedQuotes');
+    if (storedQuotes) {
+      setSavedQuotes(JSON.parse(storedQuotes));
+    }
+  }, []);
+
+  const saveQuote = (quote) => {
+    const updatedQuotes = [...savedQuotes, quote];
+    setSavedQuotes(updatedQuotes);
+    localStorage.setItem('savedQuotes', JSON.stringify(updatedQuotes));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Ron Swanson Quotes</h1>
+      <QuoteFetcher saveQuote={saveQuote} />
+      <SavedQuotes savedQuotes={savedQuotes} />
     </div>
   );
-}
+};
 
 export default App;
